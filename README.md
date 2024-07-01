@@ -6,7 +6,7 @@
 **Auteur : Sébastien Flouriot (SebF33)**
 
 **Cahier des charges :**
-Administrer une liste de bétail avec un accès à un backoffice qui permet de créer, éditer et supprimer les animaux.
+Administrer une liste de bétail avec photos disponibles et un accès à un backoffice qui permet de créer, éditer et supprimer les animaux.
 
 :construction: Work in Progress
 
@@ -16,7 +16,7 @@ Administrer une liste de bétail avec un accès à un backoffice qui permet de c
 
 
 ## :computer: Développement
-**Description technique :** CRUD (“Create, Read, Update, Delete”) avec un framework back-end & un framework front-end.
+**Description technique :** Le projet est codé sur le motif Modèle-vue-contrôleur (MVC). Il s'agit d'un simple CRUD (“Create, Read, Update, Delete”) avec un framework back-end & un framework front-end.
 
 **Langage :** PHP (POO), JavaScript.
 
