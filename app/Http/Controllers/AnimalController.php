@@ -50,7 +50,7 @@ class AnimalController extends Controller
      */
     public function store(Request $request)
     {
-        Validator::make($request->all(), [
+        $validator = Validator::make($request->all(), [
             'name' => ['required', 'string'],
             'age' => ['required', 'numeric', 'max:99'],
             'mammal_id' => ['required'],
@@ -58,17 +58,28 @@ class AnimalController extends Controller
             'description' => ['required', 'string'],
             'status_id' => ['required'],
             'htprice' => ['required', 'numeric'],
-            'photo' => ['nullable', 'image'],
-        ])->validate();
+            'newPhotos.*' => ['nullable', 'file', 'image'],
+        ]);
 
-        $animal = Animal::create($request->all());
-
-        if ($request->hasFile('photo')) {
-            $path = $request->file('photo')->store('public/photos');
-            $animal->photos()->create(['file_path' => $path]);
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
         }
 
-        return redirect()->route('animals.index');
+        $animal = Animal::create($request->except('newPhotos'));
+
+        if ($request->hasFile('newPhotos')) {
+            foreach ($request->file('newPhotos') as $file) {
+                $path = $file->store('public/photos');
+                Photo::create([
+                    'animal_id' => $animal->id,
+                    'file_path' => $path,
+                ]);
+            }
+        }
+
+        return redirect()->route('animals.index')->with('success', 'Animal mis à jour avec succès !');
     }
 
 
@@ -81,7 +92,9 @@ class AnimalController extends Controller
     {
         $breeds = Breed::all();
         $mammals = Mammal::all();
-        $photos = Photo::where('animal_id', $animal->id)->get();
+        $photos = Photo::where('animal_id', $animal->id)
+            ->orderBy('created_at', 'desc')
+            ->get();
         $statuses = Status::all();
 
         return Inertia::render('Animals/Edit', [

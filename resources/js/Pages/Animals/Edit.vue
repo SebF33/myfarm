@@ -21,7 +21,6 @@ const form = useForm({
   description: props.animal.description,
   status_id: props.animal.status_id,
   htprice: props.animal.htprice,
-  photos: [],
   newPhotos: [],
 });
 
@@ -51,15 +50,31 @@ const removePhoto = (photoId) => {
   });
 };
 
-const submit = () => {
-  form.put(route("animals.update", props.animal.id), {
-    onSuccess: () => {
-      alert("Animal mis à jour avec succès !");
-    },
-    onError: (errors) => {
-      console.log("Error:", errors);
-    },
-  });
+// Inertia.js Multipart limitations: https://inertiajs.com/file-uploads
+const submit = async () => {
+  const formData = {
+    _method: "put",
+    name: form.name,
+    age: form.age,
+    mammal_id: form.mammal_id,
+    breed_id: form.breed_id,
+    description: form.description,
+    status_id: form.status_id,
+    htprice: form.htprice,
+  };
+
+  if (form.newPhotos.length > 0) {
+    formData.newPhotos = form.newPhotos;
+  }
+
+  try {
+    const response = await router.post(
+      route("animals.update", props.animal.id),
+      formData
+    );
+  } catch (error) {
+    console.error("Exception:", error);
+  }
 };
 </script>
 

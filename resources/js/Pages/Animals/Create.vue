@@ -20,11 +20,14 @@ const form = useForm({
   description: "",
   status_id: "",
   htprice: 0,
-  photo: null,
+  newPhotos: [],
 });
 
 const handlePhotoUpload = (event) => {
-  form.photo = event.target.files[0];
+  const files = event.target.files;
+  for (let i = 0; i < files.length; i++) {
+    form.newPhotos.push(files[i]);
+  }
 };
 
 const submit = () => {
@@ -183,15 +186,16 @@ const submit = () => {
               </div>
 
               <div class="mb-4">
-                <BreezeLabel for="photo" value="Photo" />
+                <BreezeLabel for="newPhotos" value="Ajouter des photos" />
                 <input
-                  id="photo"
+                  id="newPhotos"
                   type="file"
                   class="mt-1 block w-full"
+                  multiple
                   @change="handlePhotoUpload"
                 />
-                <span class="text-red-600" v-if="form.errors.photo">
-                  {{ form.errors.photo }}
+                <span class="text-red-600" v-if="form.errors.newPhotos">
+                  {{ form.errors.newPhotos }}
                 </span>
               </div>
 

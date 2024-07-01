@@ -12,14 +12,15 @@ class PhotoController extends Controller
   public function store(Request $request, Animal $animal)
   {
     $request->validate([
-      'photo' => 'required|image|max:2048',
+      'newPhotos.*' => 'nullable|file|image',
     ]);
 
-    $path = $request->file('photo')->store('public/photos');
-
-    $animal->photos()->create([
-      'file_path' => $path,
-    ]);
+    if ($request->hasFile('newPhotos')) {
+      foreach ($request->file('newPhotos') as $file) {
+        $path = $file->store('public/photos');
+        $animal->photos()->create(['file_path' => $path]);
+      }
+    }
 
     return redirect()->route('animals.show', $animal);
   }
